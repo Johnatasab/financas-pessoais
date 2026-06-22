@@ -1,0 +1,513 @@
+/* ========== RESET E VARIÁVEIS ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --verde: #1D9E75;
+  --vermelho: #E24B4A;
+  --azul: #378ADD;
+  --fundo: #f5f5f0;
+  --branco: #ffffff;
+  --borda: #e0ddd6;
+  --texto: #1a1a1a;
+  --muted: #6b6b6b;
+  --radius: 12px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* ========== CABEÇALHO ========== */
+.header, .header-right, .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+}
+
+/* ========== BOTÕES E SELECTS ========== */
+.btn, select {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--borda);
+  background: var(--branco);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--texto);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover, select:hover {
+  background: var(--fundo);
+  border-color: #ccc;
+}
+
+.btn-primary {
+  background: var(--azul);
+  color: #fff;
+  border-color: var(--azul);
+}
+
+.btn-primary:hover {
+  background: #185FA5;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* ========== ABAS ========== */
+.tabs {
+  display: flex;
+  background: #e8e6e0;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tab.active {
+  background: var(--branco);
+  color: var(--texto);
+  font-weight: 500;
+  box-shadow: var(--shadow);
+}
+
+/* ========== CARDS E SEÇÕES ========== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card, .section, .modal {
+  background: var(--branco);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.summary-card {
+  padding: 1rem 1.25rem;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.summary-value {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.section {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ========== LISTA DE TRANSAÇÕES ========== */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.tx-item:hover {
+  background: var(--fundo);
+}
+
+.tx-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.tx-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tx-desc {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tx-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tx-amount {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tx-del {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 18px;
+  padding: 4px;
+}
+
+.tx-del:hover {
+  color: var(--vermelho);
+  background: #fff0f0;
+}
+
+/* ========== CORES E BADGES ========== */
+.pos { color: var(--verde); }
+.neg { color: var(--vermelho); }
+
+.badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-block;
+}
+.badge.debito       { background: #E6F1FB; color: #0C447C; }
+.badge.credito      { background: #FAEEDA; color: #633806; }
+.badge.pix          { background: #EAF3DE; color: #27500A; }
+.badge.transferencia{ background: #EEEDFE; color: #3C3489; }
+.badge.dinheiro     { background: #F1EFE8; color: #444441; }
+
+/* ========== FILTROS ========== */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  border: 1px solid var(--borda);
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.chip.active {
+  background: var(--azul);
+  color: #fff;
+  border-color: var(--azul);
+}
+
+/* ========== CONTAS ========== */
+.contas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.conta-card {
+  background: var(--branco);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--azul);
+}
+
+.conta-card-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.conta-card-value {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+/* ========== GRÁFICOS E BARRAS ========== */
+.progress-bar {
+  background: #eeece6;
+  border-radius: 100px;
+  height: 7px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+/* ========== MODAIS ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
+}
+
+.modal h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+/* ========== FORMULÁRIOS ========== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+input, select {
+  padding: 9px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--azul);
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+/* ========== ESTADO VAZIO ========== */
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ========== BOTÕES DE ESCOLHA (Receita/Despesa) ========== */
+.btn-tipo {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  width: 140px;
+}
+
+.btn-tipo:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .header h1 {
+    font-size: 20px;
+  }
+  .tab {
+    font-size: 12px;
+    padding: 7px 2px;
+  }
+}
+
+:focus-visible {
+    outline: 2px solid var(--azul);
+    outline-offset: 2px;
+}
+
+/* Toast de notificação */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 2000;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.toast-success { background: #1D9E75; }
+.toast-error { background: #E24B4A; }
+.toast-info { background: #378ADD; }
+.toast.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Mensagens de erro em tempo real */
+.error-msg {
+  color: #E24B4A;
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+}
+input.error, select.error {
+  border-color: #E24B4A;
+}
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 16px; border-radius: 40px; z-index: 9999; animation: fadeOut 3s forwards; }
+.toast.success { background: #1D9E75; }
+.toast.error { background: #E24B4A; }
+.toast.info { background: #378ADD; }
+@keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+.input-error { border-color: #E24B4A !important; background: #fff5f5; }
+.error-message { color: #E24B4A; font-size: 11px; margin-top: 4px; }
+
+/* Tema claro (padrão) */
+:root {
+  --verde: #1D9E75;
+  --vermelho: #E24B4A;
+  --azul: #378ADD;
+  --fundo: #f5f5f0;
+  --branco: #ffffff;
+  --borda: #e0ddd6;
+  --texto: #1a1a1a;
+  --muted: #6b6b6b;
+  --radius: 12px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Tema escuro */
+body.dark-mode {
+  --fundo: #121212;
+  --branco: #1e1e1e;
+  --borda: #333333;
+  --texto: #eeeeee;
+  --muted: #aaaaaa;
+  --shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .tabs {
+  background: #2c2c2c;
+}
+body.dark-mode .section,
+body.dark-mode .summary-card,
+body.dark-mode .conta-card,
+body.dark-mode .modal {
+  background: var(--branco);
+}
+body.dark-mode .tx-item {
+  border-color: var(--borda);
+}
+body.dark-mode .badge.debito { background: #1a3a5c; color: #aaccff; }
+body.dark-mode .badge.credito { background: #5c3a1a; color: #ffccaa; }
+/* ... ajustar outras cores de badge conforme necessário */

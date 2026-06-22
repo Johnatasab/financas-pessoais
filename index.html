@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Sistema de finanças pessoais profissional - Controle suas receitas, despesas, contas e análise de gastos">
+  <title>Finanças Pessoais - Profissional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- ================= CABEÇALHO SEMÂNTICO ================= -->
+    <header class="main-header">
+      <div class="header-content">
+        <div class="logo-area">
+          <h1>💰 Finanças Pessoais</h1>
+          <p id="period-label" class="period-label"></p>
+        </div>
+        <div class="header-actions">
+          <div class="filter-group">
+            <label for="month-filter" class="visually-hidden">Filtrar por mês</label>
+            <select id="month-filter" aria-label="Selecione o mês"></select>
+          </div>
+          <button id="themeToggle" class="btn btn-sm" arial-label="Alternar tema escuro/claro">🌚</button>
+          <button class="btn btn-primary" id="newTransactionBtn" aria-label="Adicionar nova transação">
+            + Nova
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= BARRA DE FERRAMENTAS (opcional, pode ficar dentro do header ou depois) ================= -->
+    <div class="toolbar" aria-label="Ferramentas de gerenciamento">
+      <div class="toolbar-buttons">
+        <button class="btn btn-sm" id="syncToCloudBtn">☁️ Sincronizar</button>
+        <button class="btn btn-sm" id="syncFromCloudBtn">⬇️Baixar</button>
+        <button class="btn btn-sm" id="exportBtn" aria-label="Exportar dados">📤 Exportar</button>
+        <button class="btn btn-sm" id="importBtn" aria-label="Importar dados">📥 Importar</button>
+        <input type="file" id="importFile" accept=".json" hidden aria-label="Arquivo de importação">
+        <button class="btn btn-sm btn-outline" id="resetDemoBtn" aria-label="Carregar dados de demonstração">🔄 Demo</button>
+      </div>
+    </div>
+
+    <!-- ================= NAVEGAÇÃO POR ABAS ================= -->
+    <nav class="tabs" aria-label="Navegação principal">
+      <button class="tab active" data-tab="resumo" aria-selected="true">Resumo</button>
+      <button class="tab" data-tab="transacoes" aria-selected="false">Transações</button>
+      <button class="tab" data-tab="contas" aria-selected="false">Contas</button>
+      <button class="tab" data-tab="analise" aria-selected="false">Análise</button>
+    </nav>
+
+    <!-- ================= CONTEÚDO PRINCIPAL ================= -->
+    <main id="main-content">
+      <!-- Aba Resumo -->
+      <section id="tab-resumo" aria-label="Resumo financeiro">
+        <div class="summary-grid">
+          <article class="summary-card">
+            <div class="summary-label">📈 Receitas</div>
+            <div class="summary-value pos" id="sum-receita">R$ 0,00</div>
+          </article>
+          <article class="summary-card">
+            <div class="summary-label">📉 Despesas</div>
+            <div class="summary-value neg" id="sum-despesa">R$ 0,00</div>
+          </article>
+          <article class="summary-card">
+            <div class="summary-label">⚖️ Saldo</div>
+            <div class="summary-value" id="sum-saldo">R$ 0,00</div>
+          </article>
+        </div>
+
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Saldo por conta</h2>
+          </div>
+          <div id="contas-resumo"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Últimas transações</h2>
+          </div>
+          <div id="tx-recent"></div>
+        </section>
+      </section>
+
+      <!-- Aba Transações -->
+      <section id="tab-transacoes" style="display:none" aria-label="Lista de transações">
+        <div class="filter-row" role="group" aria-label="Filtro por forma de pagamento">
+          <button class="chip active" data-filter="todos">Todos</button>
+          <button class="chip" data-filter="debito">Débito</button>
+          <button class="chip" data-filter="credito">Crédito</button>
+          <button class="chip" data-filter="pix">Pix</button>
+          <button class="chip" data-filter="transferencia">Transferência</button>
+          <button class="chip" data-filter="dinheiro">Dinheiro</button>
+        </div>
+        <div class="section">
+          <div id="tx-all"></div>
+        </div>
+      </section>
+
+      <!-- Aba Contas -->
+      <section id="tab-contas" style="display:none" aria-label="Gerenciamento de contas">
+        <div class="contas-grid" id="contas-cards"></div>
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Gerenciar contas</h2>
+          </div>
+          <div id="contas-list"></div>
+          <button class="btn" id="newContaBtn" aria-label="Adicionar nova conta">+ Nova conta</button>
+        </div>
+      </section>
+
+      <!-- Aba Análise -->
+      <section id="tab-analise" style="display:none" aria-label="Análise de gastos">
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Despesas por categoria</h2>
+          </div>
+          <div style="position:relative;height:260px">
+            <canvas id="catChart" role="img" aria-label="Gráfico de despesas por categoria"></canvas>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Detalhamento</h2>
+          </div>
+          <div id="cat-detail"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= RODAPÉ ================= -->
+    <footer class="main-footer">
+      <div class="footer-content">
+        <p class="footer-copyright">© 2025 Finanças Pessoais - App desenvolvido para controle financeiro</p>
+        <p class="footer-credits">Dados salvos localmente no seu navegador</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ================= MODAIS ================= -->
+  <!-- Modal Nova Transação (DUAS ETAPAS)-->
+    <div class="modal-overlay" id="modal-tx" role="dialog" aria-modal="true">
+        <div class="modal">
+
+            <!--Escolha o tipo-->
+            <div id="step1-escolha">
+                <h2 id="modalTitle">Nova transação</h2>
+                <p style="margin-bottom: 1rem;">O que você quer lançar?</p>
+                <div style="display:flex; gap: 1rem; justify-content: center;">
+                    <button id="escolherReceita" class="btn-tipo" style="background: #e6f4ea; color: #1d9e75;">📈 Receita </button>
+                    <button id="escolherDespesa" class="btn-tipo" style="background: #ffe6e5; color: #E24B4A">📉 Despesa</button>
+                </div>
+            </div>
+
+            <!--Formulário completo-->
+            <div id="step2-formulario" style="display: none;">
+                <h2 id="modalTitleStep2">Nova<span id="tipoSelecionadoLabel">Despesa</span></h2>
+                <div class="form-grid">
+                    <div>
+                        <label>Tipo</label>
+                        <input type="text" id="f-tipo-display" readonly disabled style="background: #f0f0f0;">
+                        <input type="hidden" id="f-tipo" value="despesa">
+                    </div>
+                    <div>
+                        <label>Pagamento</label>
+                        <select id="f-forma">
+                            <option value="debito">Debito</option>
+                            <option value="credito">Crédito</option>
+                            <option value="mbway">MBWay</option>
+                            <option value="transferencia">Transferência</option>
+                            <option value="dinheiro">Dinheiro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Conta</label>
+                        <select id="f-conta"></select>
+                    </div>
+                    <div>
+                        <label>Valor (€)</label>
+                        <input type="number" id="f-valor" step="0.01" min="0.01">
+                    </div>
+                    <div class="full">
+                        <label>Descrição</label>
+                        <input type="text" id="f-desc">
+                    </div>
+                    <div>
+                        <label>Categoria</label>
+                        <select id="f-cat">
+                            <option>Alimentação</option>
+                            <option>Transporte</option>
+                            <option>Moradia</option>
+                            <option>Saúde</option>
+                            <option>Lazer</option>
+                            <option>Vestuário</option>
+                            <Option>Educação</Option>
+                            <option>Salário</option>
+                            <option>Investimento</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Data</label>
+                        <input type="date" id="f-data">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" id="voltarStep1Btn">Voltar</button>
+                    <button class="btn" id="closeModalBtn">Cancelar</button>
+                    <button class="btn btn-primary" id="saveTxBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>              
+ 
+
+  <!-- Modal Nova Conta -->
+  <div class="modal-overlay" id="modal-conta" role="dialog" aria-modal="true" aria-labelledby="contaModalTitle">
+    <div class="modal">
+      <h2 id="contaModalTitle">Nova conta</h2>
+      <div class="form-grid">
+        <div class="full">
+          <label for="c-nome">Nome</label>
+          <input type="text" id="c-nome" placeholder="Ex: Nubank, Poupança...">
+        </div>
+        <div>
+          <label for="c-tipo">Tipo</label>
+          <select id="c-tipo">
+            <option value="corrente">Conta Corrente</option>
+            <option value="poupanca">Poupança</option>
+            <option value="cartao">Cartão</option>
+            <option value="investimento">Investimento</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
+        </div>
+        <div>
+          <label for="c-saldo">Saldo inicial (R$)</label>
+          <input type="number" id="c-saldo" step="0.01" placeholder="0,00">
+        </div>
+        <div>
+          <label for="c-cor">Cor de destaque</label>
+          <select id="c-cor">
+            <option value="#378ADD">Azul</option>
+            <option value="#1D9E75">Verde</option>
+            <option value="#BA7517">Laranja</option>
+            <option value="#D4537E">Rosa</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="closeContaModalBtn">Cancelar</button>
+        <button class="btn btn-primary" id="saveContaBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
