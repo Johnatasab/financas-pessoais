@@ -51,6 +51,8 @@
       <button class="tab" data-tab="transacoes" aria-selected="false">Transações</button>
       <button class="tab" data-tab="contas" aria-selected="false">Contas</button>
       <button class="tab" data-tab="analise" aria-selected="false">Análise</button>
+      <button class="tab" data-tab="combustivel">⛽ Combustível</button>
+      <button class="tab" data-tab="compras">🛒 Compras</button>
     </nav>
 
     <!-- ================= CONTEÚDO PRINCIPAL ================= -->
@@ -131,13 +133,109 @@
           <div id="cat-detail"></div>
         </div>
       </section>
+
+      <!-- Aba Combustível -->
+       <section id="tab-combustivel" style="display: none;" aria-label="Calculadora de Combustível">
+        <div class="section">
+          <h2 class="section-title">⛽ Calculadora de Combustível</h2>
+          <div class="form-grid">
+            <div>
+              <label for="combustivel-km">Quilómetros rodados</label>
+              <input type="number" id="combustivel-km" step="0.1" placeholder="Ex: 350">
+            </div>
+            <div>
+              <label for="combustivel-consumo">Consumo médio (L/100km)</label>
+              <input type="number" id="combustivel-consumo" step="0.1" placeholder="Ex:6.5">
+            </div>
+            <div class="full">
+              <label for="combustivel-preco">Preço do litro (€)</label>
+              <input type="number" id="combustivel-preco" step="0.001" placeholder="Ex:1.789">
+            </div>
+          </div>
+          <button class="btn btn-primary" id="calculaCombustivelBtn">Calcular gasto</button>
+          <div id="combustivel-resultado" style="margin-top: 1rem; font-size: 18px; font-weight: 600;"></div>
+          <button class="btn btn-success" id="lancarCombustivelBtn" style="display: none; margin-top: 0.5rem;">✅ Lançar como despesa</button>
+        </div>
+       </section>
+
+      <!-- Aba Compras-->
+      <section id="tab-compras" style="display: none;" aria-label="Lista de compras">
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">🛒 Lista de compras</h2>
+            <button class="btn btn-sm btn-primary" id="addItemBtn">+ Adicionar item</button>
+          </div>
+
+          <!-- Formulário para adicionar item -->
+          <div id="form-item-container" style="display: none; background: var(--fundo); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+            <div class="form-grid">
+              <div>
+                <label for="item-nome">Nome do produto</label>
+                <input type="text" id="item-nome" placeholder="Ex: Arroz, Leite, Sabão...">
+              </div>
+              <div>
+                <label for="item-preco">Preço (€)</label>
+                <input type="number" id="item-preco" step="0.01" placeholder="0.00">
+              </div>
+              <div>
+                <label for="item-categoria">Categoria</label>
+                <select id="item-categoria">
+                  <option value="Alimentação">Alimentação</option>
+                  <option value="Higiene">Higiene</option>
+                  <option value="Limpeza">Limpeza</option>
+                  <option value="Bebidas">Bebidas</option>
+                  <option value="Congelados">Congelados</option>
+                  <option value="Frutas/Vegetais">Frutas/Vegetais</option>
+                  <option value="Carnes/Peixes">Carnes/Peixes</option>
+                  <option value="Laticínios">Laticínios</option>
+                  <option value="Padaria">Padaria</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+              <div>
+                <label for="item-supermercado">Supermecado</label>
+                <select id="item-supermercado">
+                  <option value="Continente">Continente</option>
+                  <option value="Pingo Doce">Pingo Doce</option>
+                  <option value="Auchan">Auchan</option>
+                  <option value="Lidl">Lidl</option>
+                  <option value="Mercadona">Mercadona</option>
+                  <option value="Aldi">Aldi</option>
+                  <option value="Intermaché">Intermaché</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top: 0.5rem;">
+              <button class="btn" id="cancelarItemBtn">Cancelar</button>
+              <button class="btn btn-primary" id="salvarItemBtn">Adicionar à lista</button>
+            </div>
+          </div>
+
+          <!-- Lista de item -->
+          <div id="lista-itens">
+            <div class="empty">Nenhum item na lista. Adicione um produto!</div>
+          </div>
+
+          <!-- Resumo e finalização -->
+          <div style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+            <div>
+              <div>
+                <span style="font-size: 14px; color: var(--muted);">Total estimado:</span>
+                <span id="total-compras" style="font-size: 22px; font-weight: 600; color: var(--verde);">€ 0,00</span>
+              </div>
+              <button class="btn btn-success" id="finalizaComprasBtn" style="background: var(--verde); color: #fff;">✅ Finalizar compra</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <!-- ================= RODAPÉ ================= -->
     <footer class="main-footer">
       <div class="footer-content">
         <p class="footer-copyright">© 2025 Finanças Pessoais - App desenvolvido para controle financeiro</p>
-        <p class="footer-credits">Dados salvos localmente no seu navegador</p>
       </div>
     </footer>
   </div>

@@ -4,6 +4,8 @@ import { openDatabase, saveAccountToDB, updateAccountInDB, deleteAccountFromDB, 
 import { renderAll, renderTransacoes, renderAnalise, renderContas, renderResumo } from './ui.js';
 import { updateChart } from './charts.js';
 import { syncToCloud, syncFromCloud } from './cloud.js';
+import { initCombustivel } from './modules/combustivel.js';
+import { initCompras } from './modules/compras.js';
 
 // Registrar callback de renderização
 setRenderCallback(() => {
@@ -222,7 +224,7 @@ function setFiltro(tipo, btn) {
 }
 
 function switchTab(tabName, btn) {
-  const tabs = ['resumo', 'transacoes', 'contas', 'analise'];
+  const tabs = ['resumo', 'transacoes', 'contas', 'analise', 'combustivel', 'compras'];
   tabs.forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = (t === tabName) ? '' : 'none';
@@ -290,6 +292,10 @@ function init() {
     updateChart();
   }, 300);
   monthFilter.addEventListener('change', handleMonthChange);
+
+  //
+  initCombustivel();
+  initCompras();
 
   // Abas
   document.querySelectorAll('.tab').forEach(tab => {
