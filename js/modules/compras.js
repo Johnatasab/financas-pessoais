@@ -5,6 +5,12 @@ import { saveTransactionToDB } from '../storage.js';
 import { recalcAllBalances } from '../state.js';
 import { renderAll } from '../ui.js';
 
+const SUPERMERCADO_PT = ['Continente', 'Pingo Doce', 'Auchan', 'Lidl', 'Mercadona', 'Aldi', 'Intermarché'];
+const SUPERMERCADO_BR = ['Pão de Açucar', 'Carrefour', 'Extra', 'Atacadão', 'Assaí'];
+
+const DOMINIOS_PT = ['continente.pt', 'pingodoce.pt', 'auchan.pt', 'lidl.pt', 'mercadona.pt', 'aldi.pt', 'intermache.pt'];
+const DOMINIOS_BR = ['paodeacucar.com', 'carrefour.com.br', 'extra.com.br', 'atacadao.com.br', 'assai.com.br'];
+
 // Configuração da API (substitua pelos seus dados)
 const API_KEY = 'SUA_CHAVE_API';
 const CX = 'SEU_ID_MECANISMO_BUSCA';
@@ -130,7 +136,11 @@ function abrirFormulario() {
   document.getElementById('item-nome').value = '';
   document.getElementById('item-preco').value = '';
   document.getElementById('item-categoria').value = 'Alimentação';
-  document.getElementById('item-supermercado').value = 'Continente';
+  
+  const selectSuper = document.getElementById('item-supermercacdo');
+  const supermercados = getSupermercados();
+  selectSuper.innerHTML = supermercados.map(s => `<option value="${s}">${s}</option>`).join('');
+
   editingId = null;
 }
 
@@ -143,6 +153,9 @@ function fecharFormulario() {
 // ========== PESQUISA ONLINE ==========
 async function pesquisarPreco(id) {
   const item = listaItens.find(i => i.id === id);
+  const dominios = getDominios();
+  const siteFilter = dominios.map(d => `site:${d}`).join(' OR ');
+  const query = `${item.nome} preço ${siteFilter}`;
   if (!item) return;
 
   showToast(`Pesquisando preço de "${item.nome}"...`, 'info');

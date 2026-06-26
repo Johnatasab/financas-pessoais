@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Sistema de finanças pessoais profissional - Controle suas receitas, despesas, contas e análise de gastos">
   <title>Finanças Pessoais - Profissional</title>
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -12,6 +19,25 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Tela de Login-->
+  <div id="auth-container" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--fundo); z-index: 1000;">
+    <div class="modal" style="max-width: 400px; padding: 2rem;">
+      <h2>💰 Finanças Pessoais</h2>
+      <div id="auth-form">
+        <input type="email" id="email-input" placeholder="E-mail" style="width: 100%; margin-bottom: 10px;">
+        <input type="password" id="password-input" placeholder="Senha" style="width: 100%; margin-bottom: 10px;">
+        <button class="btn btn-primary" id="logiinBtn">Entra</button>
+        <button class="btn" id="registerBtn">Registar</button>
+        <hr style="margin: 15px 0;">
+        <button class="btn" id="googleBtn" style="width: 100%; background: #fff; color: #333; border: 1px solid #ddd;">
+          <img src="https://www.google.com/favicon.ico" style="width: 18px; vertical-align: middle; margin-right: 8px;">Entrar com Google
+        </button>
+      </div>
+      <div id="auth-error" style="color: var(--vermelho); margin-top: 10px;"></div>
+    </div>
+  </div>
+
   <div class="container">
     <!-- ================= CABEÇALHO SEMÂNTICO ================= -->
     <header class="main-header">

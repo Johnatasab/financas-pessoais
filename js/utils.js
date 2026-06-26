@@ -9,12 +9,20 @@ export const MSG = {
   ERROR_DATA_FUTURE: 'Não é permitido data futura'
 };
 
+let currentCurrency = 'EUR';
+
+export function setCurrency(currency){
+  currentCurrency = currency;
+}
+
 export function fmtEuro(valor) {
   return '€ ' + valor.toFixed(2).replace('.', '.');
 }
 
 export function fmt(valor) {
-  return fmtEuro(valor);
+  const symbol = currentCurrency === 'EUR' ? '€' : 'R$';
+  const formatted = valor.toFixed(2).replace('.', ',');
+  return symbol + ' ' + formatted;
 }
 
 export function getTodayStr() {

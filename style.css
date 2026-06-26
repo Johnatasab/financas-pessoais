@@ -511,3 +511,10 @@ body.dark-mode .tx-item {
 body.dark-mode .badge.debito { background: #1a3a5c; color: #aaccff; }
 body.dark-mode .badge.credito { background: #5c3a1a; color: #ffccaa; }
 /* ... ajustar outras cores de badge conforme necessário */
+
+#auth-container {
+  display: flex;
+}
+#auth-container.hidden {
+  display: none;
+}
