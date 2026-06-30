@@ -1,10 +1,13 @@
+// === Importações ===
+
+
 // Constantes de mensagens
 export const MSG = {
   CONFIRM_DELETE_TX: 'Excluir esta transação?',
   CONFIRM_DELETE_ACCOUNT: 'Essa conta possui transações. Excluir e transferir?',
   CONFIRM_RESET: 'Apagar todos os dados e começar do zero?',
   ERROR_VALOR: 'Valor deve ser maior que zero',
-  ERROR_DESC: 'Descrição é obrigatória',
+  ERROR_DESCricao: 'Descrição é obrigatória',
   ERROR_DATA: 'Data é obrigatória',
   ERROR_DATA_FUTURE: 'Não é permitido data futura'
 };
@@ -30,6 +33,7 @@ export function getTodayStr() {
 }
 
 export function escapeHtml(str) {
+  if (str === undefined || str === null) return;
   return str.replace(/[&<>]/g, function(m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';

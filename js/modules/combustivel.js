@@ -1,8 +1,8 @@
-import { state } from '../state.js';
+import { state, recalcAllBalances } from '../state.js';
 import { showToast, fmtEuro, getTodayStr } from '../utils.js';
 import { saveTransactionToDB } from '../storage.js';
-import { recalcAllBalances } from '../state.js';
 import { renderAll } from '../ui.js';
+import { getCurrentUser } from '../supabase.js';
 
 let ultimoCalculo = 0;
 
@@ -30,49 +30,92 @@ export function calcularCombustivel() {
 }
 
 export async function lancarDespesaCombustivel() {
-    if (ultimoCalculo <= 0 ){
-        showToast('Calcule o gasto primeiro', 'error');
-        return;
-    }
-    
-    if (!state.contas.length) { 
-        showToast('Crie uma conta antes de lançar despesas.', 'error');
-        return;
-    }
+  console.log('🔄 lancarDespesaCombustivel chamada');
 
+  const btnLancar = document.getElementById('lancarCombustivelBtn');
+  if (!btnLancar) return;
+
+  // Evita cliques múltiplos
+  if (btnLancar.disabled) {
+    console.log('⏳ Já está a processar...');
+    return;
+  }
+
+  if (ultimoCalculo <= 0) {
+    showToast('Calcule o gasto primeiro.', 'error');
+    return;
+  }
+
+  const user = await getCurrentUser();
+  if (!user) {
+    showToast('Usuário não autenticado.', 'error');
+    return;
+  }
+
+  if (!state.contas.length) {
+    showToast('Crie uma conta antes de lançar despesas.', 'error');
+    return;
+  }
+
+  // Desabilitar botão
+  btnLancar.disabled = true;
+  btnLancar.textContent = '⏳ A lançar...';
+
+  try {
     const transacao = {
-        tipo: 'despesa',
-        forma: 'debito',
-        conta: state.contas[0].id,
-        valor: ultimoCalculo,
-        desc: 'Abastecimento',
-        cat: 'Combustível',
-        data: getTodayStr(),
-        mes: getTodayStr().slice(0, 7)
+      user_id: user.id,
+      tipo: 'despesa',
+      forma: 'debito',
+      conta: state.contas[0].id,
+      valor: ultimoCalculo,
+      descricao: 'Abastecimento',
+      cat: 'Combustível',
+      data: getTodayStr(),
+      mes: getTodayStr().slice(0, 7)
     };
 
-    try { 
-        const newId = await saveTransactionToDB(transacao);
-        transacao.id = newId;
-        state.transacoes.push(transacao);
-        recalcAllBalances();
-        renderAll();
-        showToast(`Despesa de combustível lançada: ${fmtEuro(ultimoCalculo)}`, 'success');
-        document.getElementById('lancarCombustivelBtn').style.display = 'none';
-        document.getElementById('combustivel-resultado').innerHTML = '';
-        ultimoCalculo = 0;
-    } catch (err) { 
-        showToast('Erro ao lançar despesa.', 'error');
-    }
+    console.log('📤 Objeto a enviar:', transacao);
+
+    const newId = await saveTransactionToDB(transacao);
+    transacao.id = newId;
+    state.transacoes.push(transacao);
+    recalcAllBalances();
+    renderAll();
+    showToast(`✅ Despesa de combustível lançada: ${fmtEuro(ultimoCalculo)}`, 'success');
+
+    // Reset UI
+    document.getElementById('lancarCombustivelBtn').style.display = 'none';
+    document.getElementById('combustivel-resultado').innerHTML = '';
+    ultimoCalculo = 0;
+
+    //Limpar campos 
+    document.getElementById('combustivel-km').value = '';
+    document.getElementById('combustivel-consumo').value = '';
+    document.getElementById('combustivel-preco').value = '';
+    ultimoCalculo = 0;
+    
+  } catch (err) {
+    console.error('❌ Erro ao lançar despesa:', err);
+    showToast('Erro ao lançar despesa.', 'error');
+  } finally {
+    // Reabilitar botão
+    btnLancar.disabled = false;
+    btnLancar.textContent = '✅ Lançar como despesa';
+  }
 }
 
 export function initCombustivel() {
-  document.addEventListener('click', function(e) {
-    if (e.target.id === 'calcularCombustivelBtn') {
-      calcularCombustivel();
+    console.log('🔧 initCombustivel() chamada');
+    const btnCalcular = document.getElementById('calculaCombustivelBtn');
+    const btnLancar = document.getElementById('lancarCombustivelBtn');
+
+    if (btnCalcular) {
+        btnCalcular.onclick = null;
+        btnCalcular.onclick = calcularCombustivel;
     }
-    if (e.target.id === 'lancarCombustivelBtn') {
-      lancarDespesaCombustivel();
+
+    if (btnLancar) {
+        btnLancar.onclick = null;
+        btnLancar.onclick = lancarDespesaCombustivel;
     }
-  });
 }

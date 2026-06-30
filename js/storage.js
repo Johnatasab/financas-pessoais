@@ -1,5 +1,7 @@
 import { state, updateState, recalcAllBalances } from './state.js';
 import { showToast } from './utils.js';
+import { getNextContaId, getNextTxId } from './state.js';
+import { supabase, getCurrentUser } from './supabase.js';
 
 let db = null;
 let dbReady = false;
@@ -61,14 +63,16 @@ function loadAllData() {
   });
 }
 
-export function saveAccountToDB(conta) {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      const req = db.transaction('contas', 'readwrite').objectStore('contas').add(conta);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  });
+export async function saveAccountToDB(conta) {
+  const { data, error } = await supabase
+    .from('contas')
+    .insert([conta])
+    .select();
+  if (error) {
+    console.error('❌ Erro do supabase:', error);
+    throw error;
+  }
+  return data[0].id;
 }
 
 export function updateAccountInDB(conta) {
@@ -81,46 +85,68 @@ export function updateAccountInDB(conta) {
   });
 }
 
-export function deleteAccountFromDB(id) {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      const req = db.transaction('contas', 'readwrite').objectStore('contas').delete(id);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
-    });
-  });
+export async function deleteAccountFromDB(id) {
+  const { error } = await supabase
+    .from('contas')
+    .delete()
+    .eq('id', id);
+  if (error) {
+    console.error('❌ Erro ao apagar conta:', error);
+    throw error;
+  }
+  console.log('✅ Conta apagada do supabase.');
 }
 
-export function saveTransactionToDB(tx) {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      if (!tx.mes && tx.data) tx.mes = tx.data.slice(0,7);
-      const req = db.transaction('transacoes', 'readwrite').objectStore('transacoes').add(tx);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  });
+export async function saveTransactionToDB(tx) {
+  console.log('📊 saveTansactionToDB chamada com:', tx);
+  try {
+    const { data, error } = await supabase
+      .from('transacoes')
+      .insert([tx])
+      .select();
+    if (error) {
+      console.error('❌ Erro Supabase:', error);
+      throw error;
+    }
+    console.log('✅ Dados recebidos do supabase:', data);
+    return data[0]?.id || data[0];
+  } catch (err) {
+    console.error('❌ Exceção em saveTransactionToDB:', err);
+    throw err;
+  }
 }
 
-export function updateTransactionInDB(tx) {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      if (!tx.mes && tx.data) tx.mes = tx.data.slice(0,7);
-      const req = db.transaction('transacoes', 'readwrite').objectStore('transacoes').put(tx);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
-    });
-  });
+export async function updateTransactionToDB(tx) {
+  console.log('📤 updateTransactionToDB chamada com:', tx);
+  try {
+    const { data, error } = await supabase
+      .from('transacoes')
+      .update(tx)
+      .eq('id', tx.id)
+      .select();
+    if (error) {
+      console.error('❌ Erro Supabase ao atualizar:', error);
+      throw error;
+    }
+    console.log('✅ Transação atualizada no Supabase:', data);
+    return data[0];
+  } catch (err) {
+    console.error('❌ Exceção em updateTransactionToDB:', err);
+    throw err;
+  }
 }
 
-export function deleteTransactionFromDB(id) {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      const req = db.transaction('transacoes', 'readwrite').objectStore('transacoes').delete(id);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
-    });
-  });
+export async function deleteTransactionFromDB(id) {
+  console.log('📤 deleteTransactionFromDB chamada com ID:', id);
+  const { error } = await supabase
+    .from('transacoes')
+    .delete()
+    .eq('id', id);
+  if (error) {
+    console.error('❌ Erro Supabase ao excluir:', error);
+    throw error;
+  }
+  console.log('✅ Transação excluída com sucesso.');
 }
 
 // Substitui todos os dados do banco por novos arrays
@@ -136,14 +162,17 @@ export async function saveAllToDB(contas, transacoes) {
 
 // Limpa todas as tabelas
 export async function clearAllData() {
-  return new Promise((resolve, reject) => {
-    ensureDB(() => {
-      const txContas = db.transaction('contas', 'readwrite').objectStore('contas').clear();
-      const txTrans = db.transaction('transacoes', 'readwrite').objectStore('transacoes').clear();
-      Promise.all([
-        new Promise(r => txContas.onsuccess = r),
-        new Promise(r => txTrans.onsuccess = r)
-      ]).then(resolve).catch(reject);
-    });
-  });
+  // Se usar Supabase:
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Usuário não autenticado.');
+  const { error } = await supabase
+    .from('contas')
+    .delete()
+    .eq('user_id', user.id);
+  if (error) throw error;
+  const { error: txError } = await supabase
+    .from('transacoes')
+    .delete()
+    .eq('user_id', user.id);
+  if (txError) throw txError;
 }

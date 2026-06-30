@@ -1,11 +1,11 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://ivunkwtjcnfxriifivlg.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_egqdy70tUVrAwI0UarVuJg_1wHGc2UF';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-//Funções de autenticação
+// === Autenticação ===
 
 //Registrar com email e senha 
 export async function signUp(email, password) {
@@ -32,8 +32,8 @@ export async function signInWithGoogle() {
 }
 
 //Sair
-export async function singOut() {
-    const { error } = await supabase.auth.singOut();
+export async function signOut() {
+    const { error } = await supabase.auth.signOut();
     if (error) throw error;
 }
 
@@ -56,7 +56,7 @@ export async function getProfile(userId) {
         .from('perfis')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
     if (error && error.code !== 'PGRST116') throw error;
     return data || { pais: 'Portugal', moeda: 'EUR' };  
 }
@@ -91,7 +91,7 @@ export async function addConta(userId, conta) {
 export async function updateConta(id, update) {
     const { data, error } = await supabase
         .from('contas')
-        .update(updates)
+        .update(update)
         .eq('id', id)
         .select();
     if (error) throw error;

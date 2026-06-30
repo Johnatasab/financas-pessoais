@@ -37,3 +37,13 @@ export function recalcAllBalances() {
   });
   updateState({ contas: state.contas });
 }
+
+export function getNextContaId() {
+  const max = Math.max(0, ...state.contas.map(c => c.id), 0);
+  return max + 1;
+}
+
+export function getNextTxId() {
+  const max = Math.max(0, ...state.transacoes.map(t => t.id), 0);
+  return max + 1;
+}

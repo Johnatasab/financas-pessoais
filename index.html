@@ -27,7 +27,7 @@
       <div id="auth-form">
         <input type="email" id="email-input" placeholder="E-mail" style="width: 100%; margin-bottom: 10px;">
         <input type="password" id="password-input" placeholder="Senha" style="width: 100%; margin-bottom: 10px;">
-        <button class="btn btn-primary" id="logiinBtn">Entra</button>
+        <button class="btn btn-primary" id="loginBtn">Entra</button>
         <button class="btn" id="registerBtn">Registar</button>
         <hr style="margin: 15px 0;">
         <button class="btn" id="googleBtn" style="width: 100%; background: #fff; color: #333; border: 1px solid #ddd;">
@@ -46,7 +46,7 @@
           <h1>💰 Finanças Pessoais</h1>
           <p id="period-label" class="period-label"></p>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="display: flex; align-items: center; gap: 12px; margin-left: auto; flex-wrap: wrap;">
           <div class="filter-group">
             <label for="month-filter" class="visually-hidden">Filtrar por mês</label>
             <select id="month-filter" aria-label="Selecione o mês"></select>
@@ -55,6 +55,27 @@
           <button class="btn btn-primary" id="newTransactionBtn" aria-label="Adicionar nova transação">
             + Nova
           </button>
+          
+          <!--Avatar-->
+          <div class="user-profile" id="user-profile">
+            <img id="user-avatar" src="https://ui-avatars.com/api?name=Usuário&background=378ADD&color=fff&size=40" alt="avatar" class="avatar">
+            <div id="user-menu" class="user-menu hidden">
+              <div class="user-menu-header">
+                <img id="user-avatar-menu" src="https://ui-avatars.com/api/?name=Usuário&background=378ADD&color=fff&size=80" alt="Avatar" class="avatar-menu">
+                <span id="user-name-menu">Usuário</span>
+                <span id="user-email-menu" style="font-size: 13px; color: var(--muted);">email@exemplo.com</span>
+              </div>
+              <hr>
+              <div class="user-menu-actions">
+                <button id="edit-profile-btn" class="menu-btn">
+                  <span class="menu-icon">✏️</span> Editar perfil
+                </button>
+                <button id="logout-btn" class="menu-btn">
+                  <span class="menu-icon">🚪</span>Terminar sessão
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -184,7 +205,23 @@
         </div>
        </section>
 
-      <!-- Aba Compras-->
+      <!-- Aba Compras -->
+
+      <section id="tab-compras" style="display: none;" aria-label="Lista de compras">
+        <div class="section" style="text-align: center;" padding: 2rem;>
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
+          <h2 style="font-size: 1.5rem; color: var(--texto);">Lista de compras</h2>
+          <p style="font-size: 1.5rem; color: var(--muted); margin: 1rem 0;">
+            Esta funcionalidade está em desenvolvimento.<br>
+            Aguarde a póxima atualização para utilizá-la.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem; margin-top: '1.5rem';">
+            <span class="badge" style="background: #f0f0f0; color: #666; font-size: 0.9rem;">⌛ Em breve!</span>
+          </div>
+        </div>
+      </section>
+
+      <!--
       <section id="tab-compras" style="display: none;" aria-label="Lista de compras">
         <div class="section">
           <div class="section-header">
@@ -192,7 +229,7 @@
             <button class="btn btn-sm btn-primary" id="addItemBtn">+ Adicionar item</button>
           </div>
 
-          <!-- Formulário para adicionar item -->
+           Formulário para adicionar item 
           <div id="form-item-container" style="display: none; background: var(--fundo); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
             <div class="form-grid">
               <div>
@@ -238,22 +275,22 @@
             </div>
           </div>
 
-          <!-- Lista de item -->
+           Lista de item 
           <div id="lista-itens">
             <div class="empty">Nenhum item na lista. Adicione um produto!</div>
-          </div>
+          </div> 
 
-          <!-- Resumo e finalização -->
+           Resumo e finalização 
           <div style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
             <div>
               <div>
                 <span style="font-size: 14px; color: var(--muted);">Total estimado:</span>
                 <span id="total-compras" style="font-size: 22px; font-weight: 600; color: var(--verde);">€ 0,00</span>
               </div>
-              <button class="btn btn-success" id="finalizaComprasBtn" style="background: var(--verde); color: #fff;">✅ Finalizar compra</button>
+              <button class="btn btn-success" id="finalizarComprasBtn" style="background: var(--verde); color: #fff;">✅ Finalizar compra</button>
             </div>
           </div>
-        </div>
+        </div> -->
       </section>
 
     </main>
